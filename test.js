@@ -4,35 +4,27 @@ const assert = require('assert')
 const removeSuffix = require('.')
 
 describe('removeSuffix()', function () {
-  it('should remove a single suffix', function () {
-    assert.strictEqual(removeSuffix('abc', 'c'), 'ab')
+  it('should return remainder and removed suffix', function () {
+    const [rest, suffix] = removeSuffix('abc', 'c')
+    assert.strictEqual(rest, 'ab')
+    assert.strictEqual(suffix, 'c')
   })
 
-  it('should return subject as-is if suffix not found', function () {
-    assert.strictEqual(removeSuffix('abc', 'x'), 'abc')
+  it('should return subject and empty string if suffix not found', function () {
+    const [rest, suffix] = removeSuffix('abc', 'x')
+    assert.strictEqual(rest, 'abc')
+    assert.strictEqual(suffix, '')
   })
 
-  it('should remove any of a list of suffixes', function () {
-    assert.strictEqual(removeSuffix('abc', ['c', 'b']), 'ab')
+  it('should remove any suffix in the argument list', function () {
+    assert.strictEqual(removeSuffix('abc', 'b', 'c')[0], 'ab')
   })
 
-  it('should accept a `this` context in lieu of the first parameter', function () {
-    assert.strictEqual(removeSuffix.call('abc', 'c'), 'ab')
+  it('should remove any suffix in an array', function () {
+    assert.strictEqual(removeSuffix('abc', ['c', 'b'])[0], 'ab')
   })
 
-  it('should give the callback the suffix and the remainder', function (done) {
-    removeSuffix('abc', 'c', (suffix, rest) => {
-      assert.strictEqual(suffix, 'c')
-      assert.strictEqual(rest, 'ab')
-      done()
-    })
-  })
-
-  it('should give the callback null if no suffix is present', function (done) {
-    removeSuffix('abc', 'x', (suffix, rest) => {
-      assert.strictEqual(suffix, null)
-      assert.strictEqual(rest, 'abc')
-      done()
-    })
+  it('should support the bind operator', function () {
+    assert.strictEqual(removeSuffix.call('abc', 'c')[0], 'ab')
   })
 })
